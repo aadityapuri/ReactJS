@@ -1,7 +1,7 @@
+import Test from "./Test"
 function App() {
-
   return (
-    <h1>React with Vite | Aaditya</h1>
+    <Test />
   )
 }
 
