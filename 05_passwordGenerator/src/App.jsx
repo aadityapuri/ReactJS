@@ -15,7 +15,7 @@ function App() {
     if (char) str += "`~!@#$%^&*()_-+={}[]|\;'\"<>?/";
 
     for(let i=0; i < length; i++){
-      let ran = Math.floor(Math.random()*str.length + 1);
+      let ran = Math.floor(Math.random()*str.length);
       pass += str.charAt(ran);
     }
     setPass(pass);
