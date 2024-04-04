@@ -101,7 +101,7 @@ export default function({post}){
             {...register("image", {required: !post})}
           />
           {post && (
-            <div>
+            <div className="w-full mb-4">
               <img src={Service.getPreviewImage(post.featuredImage)} alt={post.title} className="rounded-lg" />
             </div>
           )}

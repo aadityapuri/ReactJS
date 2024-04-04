@@ -6,27 +6,24 @@ import Input from './Input'
 import Logo from './Logo'
 import { useForm } from 'react-hook-form'
 import { useDispatch } from 'react-redux'
-import { login } from '../store/authSlice'
+import { login as authLogin } from '../store/authSlice'
 
-function SignUp() {
-  const navigate = useNavigate()
-  const [error, setError] = useState("")
-  const dispatch = useDispatch()
+function Login() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const {register, handleSubmit} = useForm()
+  const [error, setError] = useState("")
 
-  const create = async (data) =>{
+  const login = async(data)=>{
     setError("")
-    try{
-      const userData = await authService.signUp(data)
-      if(userData){
+    try {
+      const session = await authService.login(data)
+      if(session){
         const userData = await authService.getCurrentUser()
-        if(userData){
-          dispatch(login({userData}))
-        }
-        navigate('/')
+        if(userData) dispatch(authLogin({userData}))
+        navigate("/")
       }
-    }
-    catch(error){
+    } catch (error) {
       setError(error.message)
     }
   }
@@ -39,26 +36,20 @@ function SignUp() {
             <Logo width='100%'/>
           </span>
         </div>
-        <h2 className='text-center text-2xl font-bold leading-tight'>Sign up to create account</h2>
-        <p className='mt-2 text-center text-base text-black/60'>Already have an account?&nbsp;
+        <h2 className='text-center text-2xl font-bold leading-tight'>Sign in to your account</h2>
+        <p className='mt-2 text-center text-base text-black/60'>Don&apos;t have an account?&nbsp;
           <Link
           to='/login'
           className='font-medium text-primary transition-all duration-200 hover:underline' >
-            Sign In
+            Sign Up
           </Link>
         </p>
         {error && <p className='text-red-600 mt-8 text-center'>{error}</p>}
         
-        <form onSubmit={handleSubmit(create)}
+        <form onSubmit={handleSubmit(login)}
         className='mt-8'
         >
           <div className='space-y-5'>
-            <Input
-              {...register("name", {required: true})}
-              label = "Full Name : "
-              placeholder="Full Name"
-             />
-
             <Input 
               {...register("email", {required: true})}
               label = "Email : "
@@ -76,7 +67,7 @@ function SignUp() {
             <Button type='submit'
               className='w-full'
             >
-              Create Account
+              Sign in {" "}
             </Button>
             
           </div>
@@ -86,4 +77,4 @@ function SignUp() {
   )
 }
 
-export default SignUp
+export default Login
