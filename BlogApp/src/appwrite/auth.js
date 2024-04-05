@@ -2,7 +2,7 @@ import { Client, Account, ID } from "appwrite";
 import conf from "../conf/conf";
 
 export class AuthService{
-  client = new Client()
+  client = new Client();
   account;
   
   constructor(){
@@ -10,7 +10,7 @@ export class AuthService{
     .setEndpoint(conf.appwriteUrl)
     .setProject(conf.appwriteProjectId);
 
-    account = new Account(client);
+    this.account = new Account(this.client);
   }
 
   async signUp({email, password, name}){

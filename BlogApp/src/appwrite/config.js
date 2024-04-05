@@ -47,7 +47,8 @@ export class Service{
         queries
       );
     } catch (error) {
-      throw error;
+      console.log("Appwrite service :: getPosts() :: ", error);
+            return false;
     }
   }
 
