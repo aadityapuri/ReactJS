@@ -1,10 +1,10 @@
-import React, {useCallback} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import { useForm, useWatch } from "react-hook-form";
 import Button from '../Button'
 import Input from '../Input'
 import RTE from "../RTE";
 import Select from '../Select'
-import Service from '../../appwrite/config'
+import service from '../../appwrite/config'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
@@ -12,22 +12,34 @@ export default function({post}){
   const {register, handleSubmit, watch, setValue, control, getValues} = useForm({
     defaultValues: {
       title: post?.title || "",
-      slug: post.slug || "",
+      slug: post?.slug || "",
       content: post?.content || "",
       status: post?.status || "active"
     }
   })
 
+  
+  const [href,setHref] = useState('')
+  
+  useEffect(()=>{
+    console.log("This is called!!!");
+    if(post){
+      service.getPreviewImage(post.featuredImage).then((href)=> setHref(href));
+      console.log("Got image href!!")
+    }
+  },[post])
+
   const navigate = useNavigate();
   const userData = useSelector((state)=>state.auth.userData)
 
   const submit = async(data)=>{
+    console.log(data);
     if(post){
-      const file = data.image[0]? await Service.uploadFile(data.image[0]):null
+      const file = data.image[0]? await service.uploadFile(data.image[0]):null
       if(file){
-        Service.deleteFile(post.featuredImage)
+        service.deleteFile(post.featuredImage)
       }
-      const dbPost = await Service.updatePost(post.$id,{
+      const dbPost = await service.updatePost(post.$id,{
         ...data,
         featuredImage:file? file.$id : undefined
       })
@@ -37,11 +49,13 @@ export default function({post}){
       }
     }
     else{
-      const file = await Service.uploadFile(data.image[0])
+      const file = await service.uploadFile(data.featuredImage[0])
       if(file){
         const fileId = file.$id
+        console.log(fileId);
         data.featuredImage = fileId
-        const dbPost = await Service.createPost({...data, userId: userData.$id})
+        console.log(data)
+        const dbPost = await service.createDocument({...data, userId: userData.$id})
 
         if(dbPost){
           navigate(`/post/${dbPost.$id}`)
@@ -86,7 +100,7 @@ export default function({post}){
           }}
         />
         <RTE 
-          label="Content: "
+          label="Content"
           name="content"
           control={control}
           defaultValue={getValues("content")}
@@ -98,11 +112,11 @@ export default function({post}){
             type="file"
             className="mb-4"
             accept="image/png, image/jpg, image/jpeg"
-            {...register("image", {required: !post})}
+            {...register("featuredImage", {required: !post})}
           />
           {post && (
             <div className="w-full mb-4">
-              <img src={Service.getPreviewImage(post.featuredImage)} alt={post.title} className="rounded-lg" />
+              <img src={href} alt={post.title} className="rounded-lg" />
             </div>
           )}
           <Select 

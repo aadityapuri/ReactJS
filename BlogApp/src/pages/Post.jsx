@@ -14,11 +14,15 @@ function Post() {
 
   const isAuthor = post && userData ? post.userId === userData.$id : false
 
+  const [href,setHref] = useState('')
+
   useEffect(()=>{
     if(slug){
       service.getPost(slug).then((post)=>{
         if(post){
           setPost(post)
+          service.getPreviewImage(post.featuredImage).then((href)=> setHref(href));
+          console.log("Got image href!!")
         }
         else{
           navigate('/')
@@ -39,11 +43,11 @@ function Post() {
   return post ? (
     <div className='py-8'>
       <Container>
-        <div className='w-full felx justify-center mb-4 relative border rounded-xl p-2'>
-          <img src={service.getPreviewImage(post.featuredImage)} alt={post.title} className='rounded-xl' />
+        <div className='w-full flex justify-center mb-4 relative border rounded-xl p-2'>
+          <img src={href} alt={post.title} className='rounded-xl' />
           {isAuthor && (
             <div className='absolute-right-6 top-6'>
-              <Link to={`/edit/post/${post.$id}`}>
+              <Link to={`/edit-post/${post.$id}`}>
                 <Button 
                   bgColor='bg-green-500'
                   className='mr-3'

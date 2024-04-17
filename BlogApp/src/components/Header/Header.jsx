@@ -1,6 +1,6 @@
 import React from 'react'
-import { Container } from '../container/Container'
-import { Logo } from '../Logo'
+import Container from '../container/Container'
+import Logo from '../Logo'
 import LogoutButton from './LogoutButton'
 import {Link} from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
@@ -40,7 +40,7 @@ function Header() {
   ]
 
   return (
-    <Header className='py-3 shadowbg-gray-500'>
+    <header className='py-3 shadowbg-gray-500'>
       <Container>
         <nav className='flex'>
           <div className='mr-4'>
@@ -56,7 +56,7 @@ function Header() {
                     className='inline-block px-6 py-2 duration-200 hover:bg-blue-100 rounded-full'
                   >{navItem.name}</button>
                 </li>
-              ):<></>)}
+              ):null)}
               {authStatus && (
                 <li>
                   <LogoutButton />
@@ -65,7 +65,7 @@ function Header() {
           </ul>
         </nav>
       </Container>
-    </Header>
+    </header>
   )
 }
 
